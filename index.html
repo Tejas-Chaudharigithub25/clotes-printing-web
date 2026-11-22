@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintCrafter - Custom T-Shirt Printing</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-shirt"></i>
+            <span>Print<strong>Crafter</strong></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home" class="active">Home</a></li>
+            <li><a href="#designer">Design Studio</a></li>
+            <li><a href="#catalog">Products</a></li>
+            <li><a href="#orders">Track Order</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="btn-secondary" id="adminLoginBtn" onclick="openAdminModal()">
+                <i class="fa-solid fa-user-shield"></i> Admin Portal
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>Custom T-Shirts,<br><span>Printed Your Way</span></h1>
+                <p>Upload your designs, preview in real-time, and get high-quality custom printed t-shirts delivered right to your doorstep.</p>
+                <div class="hero-btns">
+                    <a href="#designer" class="btn-primary"><i class="fa-solid fa-paintbrush"></i> Start Designing</a>
+                    <a href="#catalog" class="btn-outline">Explore Styles</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80" alt="Custom Printed T-Shirt">
+            </div>
+        </section>
+
+        <!-- Interactive Design Studio -->
+        <section id="designer" class="section designer-section">
+            <div class="section-title">
+                <h2>Design Your Custom T-Shirt</h2>
+                <p>Choose options, upload your graphics, and place your order instantly.</p>
+            </div>
+
+            <div class="designer-grid">
+                <!-- Preview Canvas -->
+                <div class="preview-card">
+                    <div class="tshirt-canvas-wrapper">
+                        <div class="tshirt-mockup" id="tshirtMockup">
+                            <i class="fa-solid fa-shirt tshirt-base-icon" id="shirtIcon"></i>
+                            <div class="print-area" id="printArea">
+                                <img id="userDesignPreview" src="" alt="Your Design" class="hidden">
+                                <span class="upload-placeholder" id="uploadPlaceholder">Your Design Here</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="color-picker-group">
+                        <label>Select Shirt Color:</label>
+                        <div class="color-options">
+                            <button class="color-dot active" style="background: #ffffff; border: 1px solid #ccc;" onclick="setShirtColor('#ffffff', '#333333')"></button>
+                            <button class="color-dot" style="background: #1e293b;" onclick="setShirtColor('#1e293b', '#ffffff')"></button>
+                            <button class="color-dot" style="background: #ef4444;" onclick="setShirtColor('#ef4444', '#ffffff')"></button>
+                            <button class="color-dot" style="background: #3b82f6;" onclick="setShirtColor('#3b82f6', '#ffffff')"></button>
+                            <button class="color-dot" style="background: #10b981;" onclick="setShirtColor('#10b981', '#ffffff')"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customization Form -->
+                <div class="form-card">
+                    <form id="orderForm" onsubmit="handleCustomerSubmit(event)">
+                        <h3>Order Details</h3>
+                        
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-image"></i> Upload Artwork/Image</label>
+                            <input type="file" id="designInput" accept="image/*" required onchange="previewUserDesign(event)">
+                            <small>Formats: PNG, JPG, WEBP (Max 5MB)</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-layer-group"></i> Material</label>
+                                <select id="shirtMaterial" onchange="updatePrice()">
+                                    <option value="100% Cotton">100% Premium Cotton</option>
+                                    <option value="Poly-Cotton Blend">Poly-Cotton Blend</option>
+                                    <option value="Organic Cotton">100% Organic Cotton</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-maximize"></i> T-Shirt Size</label>
+                                <select id="shirtSize">
+                                    <option value="S">Small (S)</option>
+                                    <option value="M" selected>Medium (M)</option>
+                                    <option value="L">Large (L)</option>
+                                    <option value="XL">Extra Large (XL)</option>
+                                    <option value="XXL">2X Large (XXL)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-arrow-up-1-9"></i> Quantity</label>
+                                <input type="number" id="shirtQty" value="1" min="1" max="100" onchange="updatePrice()">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-tag"></i> Total Price</label>
+                                <div class="price-display" id="totalPriceDisplay">$24.99</div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h3>Shipping & Contact</h3>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="custName" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="custEmail" placeholder="john@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Delivery Address</label>
+                            <textarea id="custAddress" rows="2" placeholder="123 Main St, Apt 4B, City, State" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary full-width">
+                            <i class="fa-solid fa-credit-card"></i> Proceed to Demo Payment
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customer Order Lookup -->
+        <section id="orders" class="section">
+            <div class="section-title">
+                <h2>Track Your Order</h2>
+                <p>Enter your Order ID or Email to check status</p>
+            </div>
+            <div class="lookup-card">
+                <div class="search-box">
+                    <input type="text" id="trackInput" placeholder="Enter Order ID (e.g. ORD-1001) or Email">
+                    <button class="btn-primary" onclick="trackOrder()"><i class="fa-solid fa-magnifying-glass"></i> Track</button>
+                </div>
+                <div id="trackResult" class="track-result-container"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Demo Payment Modal -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-shield-halved"></i> Demo Gateway Payment</h3>
+                <button class="close-btn" onclick="closePaymentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-summary">
+                    <p>Amount to Pay: <strong id="payAmount">$0.00</strong></p>
+                    <p class="badge-demo">Demo Mode - No Real Money Charged</p>
+                </div>
+
+                <div class="payment-methods">
+                    <label class="pm-option active">
+                        <input type="radio" name="payMethod" value="Card" checked>
+                        <span><i class="fa-solid fa-credit-card"></i> Credit / Debit Card</span>
+                    </label>
+                    <label class="pm-option">
+                        <input type="radio" name="payMethod" value="UPI/QR">
+                        <span><i class="fa-solid fa-qrcode"></i> UPI / Instant Pay</span>
+                    </label>
+                </div>
+
+                <div class="card-demo-fields">
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <input type="text" value="4111 •••• •••• 1111" disabled>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Expiry</label>
+                            <input type="text" value="12/28" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>CVV</label>
+                            <input type="password" value="123" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-success full-width" onclick="completeDemoPayment()">
+                    <i class="fa-solid fa-check-circle"></i> Confirm Demo Payment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal-overlay" id="adminLoginModal">
+        <div class="modal-card mini">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-lock"></i> Admin Login</h3>
+                <button class="close-btn" onclick="closeAdminModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="adminUser" value="admin">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="adminPass" value="admin123">
+                </div>
+                <small class="hint-text">Default: admin / admin123</small>
+                <button class="btn-primary full-width" onclick="loginAdmin()">Login to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Portal View -->
+    <div class="admin-panel-overlay" id="adminPanel">
+        <header class="admin-header">
+            <div class="logo">
+                <i class="fa-solid fa-gear"></i>
+                <span>Print<strong>Crafter</strong> Admin</span>
+            </div>
+            <div class="admin-user-info">
+                <span>Welcome, <strong>Manager</strong></span>
+                <button class="btn-outline btn-sm" onclick="logoutAdmin()"><i class="fa-solid fa-sign-out"></i> Logout</button>
+            </div>
+        </header>
+
+        <div class="admin-container">
+            <!-- Stats Dashboard -->
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <i class="fa-solid fa-box icon-blue"></i>
+                    <div>
+                        <h4 id="statTotal">0</h4>
+                        <p>Total Orders</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-spinner icon-orange"></i>
+                    <div>
+                        <h4 id="statPrinting">0</h4>
+                        <p>In Printing</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-truck-fast icon-green"></i>
+                    <div>
+                        <h4 id="statDelivered">0</h4>
+                        <p>Delivered</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-dollar-sign icon-purple"></i>
+                    <div>
+                        <h4 id="statRevenue">$0.00</h4>
+                        <p>Total Revenue</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Management Table -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>All Printing Orders</h3>
+                    <div class="table-actions">
+                        <select id="filterStatus" onchange="renderAdminOrders()">
+                            <option value="ALL">All Statuses</option>
+                            <option value="Paid">Paid (Pending Print)</option>
+                            <option value="Printing">Printing</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Design Preview</th>
+                                <th>Customer Info</th>
+                                <th>Specs</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrderTableBody">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
